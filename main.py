@@ -1,55 +1,27 @@
 import json
 import os
-from datetime import datetime
+# from datetime import datetime
 from logging import config
 from typing import Any, Generator, List
 
 from fastapi import Depends, FastAPI, HTTPException, Response, status
 from fastapi.encoders import jsonable_encoder
 from fastapi_route_logger_middleware import RouteLoggerMiddleware
-from pydantic import BaseModel, ConfigDict
-from sqlalchemy import Column, DateTime, Integer, String, create_engine
-from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy.orm import Session, sessionmaker
+from sqlalchemy.orm import Session
+
+from database import SessionLocal
+from models import TodoModel
+from schemas import TodoSchema, CreateTodoSchema
 
 app = FastAPI()
 
-DATABASE_URL = "sqlite:///todo.db"
-
-engine = create_engine(DATABASE_URL, connect_args={"check_same_thread": False})
-SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
-if SessionLocal is None:
-    exit()
-
 
 def get_db() -> Generator:
+    db = SessionLocal()
     try:
-        db = SessionLocal()
         yield db
     finally:
         db.close()
-
-
-Base = declarative_base()
-
-
-class TodoModel(Base):
-    __tablename__ = "todo"
-
-    id = Column(Integer, primary_key=True, index=True)
-    text = Column(String, nullable=False)
-    created_at = Column(DateTime, default=datetime.now(), nullable=False)
-
-
-class TodoSchema(BaseModel):
-    id: int
-    text: str
-    model_config = ConfigDict(from_attributes=True)
-
-
-class CreateTodoSchema(BaseModel):
-    text: str
-    model_config = ConfigDict(from_attributes=True)
 
 
 with open(f"{os.path.dirname(__file__)}/logging.json", encoding="utf-8") as f:

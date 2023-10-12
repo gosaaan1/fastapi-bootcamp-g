@@ -5,7 +5,8 @@ from sqlalchemy import pool
 
 from alembic import context
 
-from main import Base, DATABASE_URL, TodoModel
+from database import Base, DATABASE_URL
+from models import TodoModel
 
 
 # this is the Alembic Config object, which provides
