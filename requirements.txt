@@ -1,0 +1,10 @@
+black
+flake8
+fastapi
+uvicorn[standard]
+gunicorn
+sqlalchemy
+alembic
+debugpy
+fastapi-debug-toolbar
+fastapi-route-logger-middleware

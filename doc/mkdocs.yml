@@ -1,0 +1,79 @@
+site_name: MkDocsサンプル
+nav:
+  - ドキュメント: index.md
+extra_css:
+  - "https://fonts.googleapis.com/earlyaccess/notosansjp.css"
+  - "https://fonts.googleapis.com/css?family=Open+Sans:600,800"
+  - "https://maxcdn.bootstrapcdn.com/font-awesome/4.6.1/css/font-awesome.min.css"
+  - "css/custom.css"
+extra_javascript: 
+  - "https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"
+use_directory_urls: false
+theme: 
+  name: material
+  language: ja
+  font:
+    text: "Noto Sans JP"
+    code: "Consolas"
+  logo: img/logo.png
+  favicon: img/favicon.ico  
+  features:
+    # ページナビゲーションを折りたたみ可能なリンクで左側に配置します。
+    - navigation.expand
+    - toc.integrate
+    - navigation.indexes
+    # トップへ戻るボタン
+    - navigation.top
+    # スクロールしたときヘッダーを自動的に非表示にする
+    - header.autohide
+    # 検索の候補リスト表示を表示する
+    - search.suggest
+    # 検索で一致した結果をハイライトする
+    - search.highlight
+    # コンテンツタブ表示を有効にする
+    - content.tabs.link
+    - content.code.annotate
+  # ダークモードスイッチ
+  palette:
+    primary: white
+    accent: pink
+markdown_extensions:
+  - mdx_math
+  - admonition
+  - footnotes
+  - fontawesome_markdown
+  - def_list
+  - mdx_unimoji
+  - pymdownx.smartsymbols
+  - pymdownx.keys
+  - pymdownx.highlight:
+      use_pygments: true
+      noclasses: true
+      linenums: true
+      anchor_linenums: true
+      auto_title: true
+  - pymdownx.inlinehilite
+  - pymdownx.details
+  - pymdownx.tilde
+  - pymdownx.caret
+  - pymdownx.mark
+  - pymdownx.critic
+  - abbr
+  - attr_list
+  - md_in_html
+  - pymdownx.tasklist:
+      custom_checkbox: true
+  - tables
+  - pymdownx.snippets
+  - pymdownx.tabbed:
+      alternate_style: true 
+  - pymdownx.superfences:
+      custom_fences:
+        - name: mermaid
+          class: mermaid
+          format: !!python/name:pymdownx.superfences.fence_code_format
+  - toc:
+      permalink: True
+plugins:
+  - mkdocs-video
+dev_addr: "0.0.0.0:8000"

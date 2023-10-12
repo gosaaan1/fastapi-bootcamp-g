@@ -1,0 +1,5 @@
+mkdocs-material
+python-markdown-math
+fontawesome_markdown
+mdx_unimoji
+mkdocs-video
