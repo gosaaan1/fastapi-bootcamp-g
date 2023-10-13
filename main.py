@@ -59,7 +59,7 @@ def read_by_id(todo_id: int, db: Session = Depends(get_db)) -> Any:
 @app.put("/todo/{todo_id}")
 def update(todo_id: int, todo: CreateTodoSchema, db: Session = Depends(get_db)) -> Any:
     todo_model = db.query(TodoModel).filter(TodoModel.id == todo_id).first()
-    if not todo:
+    if not todo_model:
         raise HTTPException(status_code=404, detail="Todo not found")
     todo_obj = jsonable_encoder(todo_model)
     if isinstance(todo, dict):
