@@ -29,7 +29,7 @@ with open(f"{os.path.dirname(__file__)}/logging.json", encoding="utf-8") as f:
 app.add_middleware(RouteLoggerMiddleware)
 
 
-@app.post("/", response_model=TodoSchema)
+@app.post("/todo", response_model=TodoSchema)
 def create(todo: CreateTodoSchema, db: Session = Depends(get_db)) -> Any:
     todo_obj = jsonable_encoder(todo)
     todo_model = TodoModel(**todo_obj)
@@ -39,7 +39,7 @@ def create(todo: CreateTodoSchema, db: Session = Depends(get_db)) -> Any:
     return TodoSchema.model_validate(todo_model)
 
 
-@app.get("/", response_model=List[TodoSchema])
+@app.get("/todo", response_model=List[TodoSchema])
 def read(skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
     todo_model_list = db.query(TodoModel).offset(skip).limit(limit).all()
     todo_schema_list = [
@@ -48,7 +48,7 @@ def read(skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
     return todo_schema_list
 
 
-@app.get("/{todo_id}", response_model=TodoSchema)
+@app.get("/todo/{todo_id}", response_model=TodoSchema)
 def read_by_id(todo_id: int, db: Session = Depends(get_db)) -> Any:
     todo_model = db.query(TodoModel).filter(TodoModel.id == todo_id).first()
     if todo_model is None:
@@ -56,7 +56,7 @@ def read_by_id(todo_id: int, db: Session = Depends(get_db)) -> Any:
     return TodoSchema.model_validate(todo_model)
 
 
-@app.put("/{todo_id}")
+@app.put("/todo/{todo_id}")
 def update(todo_id: int, todo: CreateTodoSchema, db: Session = Depends(get_db)) -> Any:
     todo_model = db.query(TodoModel).filter(TodoModel.id == todo_id).first()
     if not todo:
@@ -76,7 +76,7 @@ def update(todo_id: int, todo: CreateTodoSchema, db: Session = Depends(get_db)) 
     return Response(status_code=status.HTTP_200_OK)
 
 
-@app.delete("/{todo_id}")
+@app.delete("/todo/{todo_id}")
 def delete(todo_id: int, db: Session = Depends(get_db)) -> Any:
     todo = db.query(TodoModel).get(todo_id)
     db.delete(todo)

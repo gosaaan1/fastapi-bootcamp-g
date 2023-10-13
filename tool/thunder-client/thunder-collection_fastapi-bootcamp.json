@@ -1,1 +1,116 @@
-{"client":"Thunder Client","collectionName":"fastapi-bootcamp","dateExported":"2023-01-19T00:56:20.664Z","version":"1.1","folders":[],"requests":[{"_id":"962e57cf-628e-47df-9ac7-7c875fcb6f85","colId":"6c939120-87a1-41d4-89b4-6499d1362b84","containerId":"","name":"http://localhost:8000/","url":"http://localhost:8000/","method":"GET","sortNum":2500,"created":"2023-01-18T10:15:55.186Z","modified":"2023-01-19T00:52:51.423Z","headers":[],"params":[],"tests":[]},{"_id":"9b7e9972-3407-4ade-825e-92f1bbd8169e","colId":"6c939120-87a1-41d4-89b4-6499d1362b84","containerId":"","name":"http://localhost:8000/","url":"http://localhost:8000/","method":"POST","sortNum":5000,"created":"2023-01-18T23:47:43.899Z","modified":"2023-01-18T23:47:50.406Z","headers":[],"params":[],"body":{"type":"json","raw":"{\n  \"text\": \"Hello\"\n}","form":[]},"tests":[]},{"_id":"7c7da4f6-01c3-4d6a-b349-b29fe4ac1cee","colId":"6c939120-87a1-41d4-89b4-6499d1362b84","containerId":"","name":"http://localhost:8000/","url":"http://localhost:8000/1","method":"GET","sortNum":15000,"created":"2023-01-18T15:13:58.172Z","modified":"2023-01-18T23:47:54.779Z","headers":[],"params":[],"tests":[]},{"_id":"494ff66d-d31e-4f22-ad96-8e3d78d95c6b","colId":"6c939120-87a1-41d4-89b4-6499d1362b84","containerId":"","name":"http://localhost:8000/1","url":"http://localhost:8000/1","method":"PUT","sortNum":25000,"created":"2023-01-19T00:34:31.755Z","modified":"2023-01-19T00:34:31.755Z","headers":[],"params":[],"body":{"type":"json","raw":"{\n  \"text\": \"こんにちは\"\n}","form":[]},"tests":[]},{"_id":"da6d8528-eed2-4b77-8a22-432b9925f759","colId":"6c939120-87a1-41d4-89b4-6499d1362b84","containerId":"","name":"http://localhost:8000/1","url":"http://localhost:8000/1","method":"DELETE","sortNum":35000,"created":"2023-01-19T00:35:40.045Z","modified":"2023-01-19T00:35:40.045Z","headers":[],"params":[],"tests":[]}]}
+{
+    "info": {
+        "_postman_id": "39c7ebfc-6b13-43c5-8780-7599a68ecff3",
+        "name": "fastapi-bootcamp",
+        "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+        "description": ""
+    },
+    "item": [
+        {
+            "name": "http://localhost:8000/todo",
+            "request": {
+                "method": "GET",
+                "url": {
+                    "raw": "http://localhost:8000/todo",
+                    "path": [
+                        "todo"
+                    ],
+                    "protocol": "http",
+                    "host": [
+                        "localhost"
+                    ],
+                    "port": "8000"
+                }
+            }
+        },
+        {
+            "name": "http://localhost:8000/todo/{id}",
+            "request": {
+                "method": "GET",
+                "url": {
+                    "raw": "http://localhost:8000/todo/1",
+                    "path": [
+                        "todo",
+                        "1"
+                    ],
+                    "protocol": "http",
+                    "host": [
+                        "localhost"
+                    ],
+                    "port": "8000"
+                }
+            }
+        },
+        {
+            "name": "http://localhost:8000/todo",
+            "request": {
+                "method": "POST",
+                "url": {
+                    "raw": "http://localhost:8000/todo",
+                    "path": [
+                        "todo"
+                    ],
+                    "protocol": "http",
+                    "host": [
+                        "localhost"
+                    ],
+                    "port": "8000"
+                },
+                "body": {
+                    "mode": "raw",
+                    "options": {
+                        "raw": {
+                            "language": "json"
+                        }
+                    },
+                    "raw": "{\n  \"text\": \"Hello\"\n}"
+                }
+            }
+        },
+        {
+            "name": "http://localhost:8000/todo/{id}",
+            "request": {
+                "method": "PUT",
+                "url": {
+                    "raw": "http://localhost:8000/todo/1",
+                    "path": [
+                        "todo",
+                        "1"
+                    ],
+                    "protocol": "http",
+                    "host": [
+                        "localhost"
+                    ],
+                    "port": "8000"
+                },
+                "body": {
+                    "mode": "raw",
+                    "options": {
+                        "raw": {
+                            "language": "json"
+                        }
+                    },
+                    "raw": "{\n  \"text\": \"こんにちは\"\n}"
+                }
+            }
+        },
+        {
+            "name": "http://localhost:8000/todo/{id}",
+            "request": {
+                "method": "DELETE",
+                "url": {
+                    "raw": "http://localhost:8000/todo/1",
+                    "path": [
+                        "todo",
+                        "1"
+                    ],
+                    "protocol": "http",
+                    "host": [
+                        "localhost"
+                    ],
+                    "port": "8000"
+                }
+            }
+        }
+    ]
+}
