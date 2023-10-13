@@ -9,3 +9,10 @@ class TodoModel(Base):
     text = Column(String, nullable=False)
     created_at = Column(DateTime, default=datetime.now(), nullable=False)
     completed = Column(Boolean, default=False, nullable=False)
+
+class TagModel(Base):
+    __tablename__ = "tag"
+
+    id = Column(Integer, primary_key=True, index=True)
+    name = Column(String, nullable=False)
+    created_at = Column(DateTime, default=datetime.now(), nullable=False)

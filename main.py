@@ -1,6 +1,5 @@
 import json
 import os
-# from datetime import datetime
 from logging import config
 from typing import Any, Generator, List
 
@@ -10,8 +9,8 @@ from fastapi_route_logger_middleware import RouteLoggerMiddleware
 from sqlalchemy.orm import Session
 
 from database import SessionLocal
-from models import TodoModel
-from schemas import TodoSchema, CreateTodoSchema
+from models import TodoModel, TagModel
+from schemas import CreateTagSchema, TagSchema, TodoSchema, CreateTodoSchema, IdSchema
 
 app = FastAPI()
 
@@ -29,19 +28,20 @@ with open(f"{os.path.dirname(__file__)}/logging.json", encoding="utf-8") as f:
 app.add_middleware(RouteLoggerMiddleware)
 
 
-@app.post("/todo", response_model=TodoSchema)
-def create(todo: CreateTodoSchema, db: Session = Depends(get_db)) -> Any:
+@app.post("/todo", response_model=IdSchema)
+def create_todo(todo: CreateTodoSchema, db: Session = Depends(get_db)) -> Any:
     todo_obj = jsonable_encoder(todo)
     todo_model = TodoModel(**todo_obj)
     db.add(todo_model)
     db.commit()
     db.refresh(todo_model)
+
     return TodoSchema.model_validate(todo_model)
 
 
 @app.get("/todo", response_model=List[TodoSchema])
-def read(skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
-    todo_model_list = db.query(TodoModel).offset(skip).limit(limit).all()
+def read_todo(skip: int = 0, limit: int = 100, completed: bool = True, db: Session = Depends(get_db)) -> Any:
+    todo_model_list = db.query(TodoModel).filter(TodoModel.completed == completed).offset(skip).limit(limit).all()
     todo_schema_list = [
         TodoSchema.model_validate(todo_model) for todo_model in todo_model_list
     ]
@@ -49,7 +49,7 @@ def read(skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
 
 
 @app.get("/todo/{todo_id}", response_model=TodoSchema)
-def read_by_id(todo_id: int, db: Session = Depends(get_db)) -> Any:
+def read_todo_by_id(todo_id: int, db: Session = Depends(get_db)) -> Any:
     todo_model = db.query(TodoModel).filter(TodoModel.id == todo_id).first()
     if todo_model is None:
         raise HTTPException(status_code=404, detail="Todo is not found")
@@ -57,10 +57,12 @@ def read_by_id(todo_id: int, db: Session = Depends(get_db)) -> Any:
 
 
 @app.put("/todo/{todo_id}")
-def update(todo_id: int, todo: CreateTodoSchema, db: Session = Depends(get_db)) -> Any:
+def update_todo(todo_id: int, todo: CreateTodoSchema, db: Session = Depends(get_db)) -> Any:
     todo_model = db.query(TodoModel).filter(TodoModel.id == todo_id).first()
     if not todo_model:
         raise HTTPException(status_code=404, detail="Todo not found")
+
+    # TODO リファクタリングできそう...
     todo_obj = jsonable_encoder(todo_model)
     if isinstance(todo, dict):
         update_data = todo
@@ -69,17 +71,72 @@ def update(todo_id: int, todo: CreateTodoSchema, db: Session = Depends(get_db)) 
     for field in todo_obj:
         if field in update_data:
             setattr(todo_model, field, update_data[field])
+
     db.add(todo_model)
     db.commit()
     db.refresh(todo_model)
 
-    return Response(status_code=status.HTTP_200_OK)
+    return TodoSchema.model_validate(todo_model)
 
 
-@app.delete("/todo/{todo_id}")
-def delete(todo_id: int, db: Session = Depends(get_db)) -> Any:
+@app.delete("/todo/{todo_id}", response_model=IdSchema)
+def delete_todo(todo_id: int, db: Session = Depends(get_db)) -> Any:
     todo = db.query(TodoModel).get(todo_id)
+    if todo is None:
+        raise HTTPException(status_code=404, detail="Todo not found")
     db.delete(todo)
     db.commit()
+
+    return TodoSchema.model_validate(todo)
+
+
+@app.post("/tag", response_model=IdSchema)
+def create_tag(tag: CreateTagSchema, db: Session = Depends(get_db)) -> Any:
+    tag_obj = jsonable_encoder(tag)
+    tag_model = TagModel(**tag_obj)
+    db.add(tag_model)
+    db.commit()
+    db.refresh(tag_model)
+
+    return TagSchema.model_validate(tag_model)
+
+
+@app.get("/tag", response_model=List[TagSchema])
+def read_tag(skip: int = 0, limit: int = 100, db: Session = Depends(get_db)) -> Any:
+    tag_model_list = db.query(TagModel).offset(skip).limit(limit).all()
+    tag_schema_list = [
+        TagSchema.model_validate(tag_model) for tag_model in tag_model_list
+    ]
+    return tag_schema_list
+
+@app.get("/tag/{tag_id}", response_model=TagSchema)
+def read_tag_by_id(tag_id: int, db: Session = Depends(get_db)) -> Any:
+    tag_model = db.query(TagModel).filter(TagModel.id == tag_id).first()
+    if not tag_model:
+        raise HTTPException(status_code=404, detail="Tag not found")
+
+    return TagSchema.model_validate(tag_model)
+
+
+@app.put("/tag/{tag_id}")
+def update_tag(tag_id: int, tag: CreateTagSchema, db: Session = Depends(get_db)) -> Any:
+    tag_model = db.query(TagModel).filter(TagModel.id == tag_id).first()
+    if not tag_model:
+        raise HTTPException(status_code=404, detail="Tag not found")
+    for f, v in tag.model_dump(exclude_unset=True).items():
+        setattr(tag_model, f, v)
+    db.add(tag_model)
+    db.commit()
+    db.refresh(tag_model)
+
+    return TagSchema.model_validate(tag_model)
+
+@app.delete("/tag/{tag_id}")
+def delete_tag(tag_id: int, db: Session = Depends(get_db)) -> Any:
+    tag = db.query(TagModel).get(tag_id)
+    if not tag:
+        raise HTTPException(status_code=404, detail="Tag not found")
+    db.delete(tag)
+    db.commit() 
 
     return Response(status_code=status.HTTP_200_OK)

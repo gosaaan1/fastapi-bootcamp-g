@@ -1,6 +1,6 @@
 {
     "info": {
-        "_postman_id": "39c7ebfc-6b13-43c5-8780-7599a68ecff3",
+        "_postman_id": "d0b6c369-ddff-40c6-a2aa-4f3b237e7540",
         "name": "fastapi-bootcamp",
         "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
         "description": ""
@@ -11,7 +11,14 @@
             "request": {
                 "method": "GET",
                 "url": {
-                    "raw": "http://localhost:8000/todo",
+                    "raw": "http://localhost:8000/todo?completed=false",
+                    "query": [
+                        {
+                            "key": "completed",
+                            "value": "false"
+                        }
+                    ],
+                    "variable": [],
                     "path": [
                         "todo"
                     ],
@@ -99,10 +106,116 @@
             "request": {
                 "method": "DELETE",
                 "url": {
-                    "raw": "http://localhost:8000/todo/1",
+                    "raw": "http://localhost:8000/todo/3",
                     "path": [
                         "todo",
+                        "3"
+                    ],
+                    "protocol": "http",
+                    "host": [
+                        "localhost"
+                    ],
+                    "port": "8000"
+                }
+            }
+        },
+        {
+            "name": "http://localhost:8000/tag",
+            "request": {
+                "method": "POST",
+                "url": {
+                    "raw": "http://localhost:8000/tag",
+                    "path": [
+                        "tag"
+                    ],
+                    "protocol": "http",
+                    "host": [
+                        "localhost"
+                    ],
+                    "port": "8000"
+                },
+                "body": {
+                    "mode": "raw",
+                    "options": {
+                        "raw": {
+                            "language": "json"
+                        }
+                    },
+                    "raw": "{\n  \"name\": \"おつかい\"\n}"
+                }
+            }
+        },
+        {
+            "name": "http://localhost:8000/tag",
+            "request": {
+                "method": "GET",
+                "url": {
+                    "raw": "http://localhost:8000/tag",
+                    "path": [
+                        "tag"
+                    ],
+                    "protocol": "http",
+                    "host": [
+                        "localhost"
+                    ],
+                    "port": "8000"
+                }
+            }
+        },
+        {
+            "name": "localhost:8000/tag/1",
+            "request": {
+                "method": "GET",
+                "url": {
+                    "raw": "http://localhost:8000/tag/1",
+                    "path": [
+                        "tag",
                         "1"
+                    ],
+                    "protocol": "http",
+                    "host": [
+                        "localhost"
+                    ],
+                    "port": "8000"
+                }
+            }
+        },
+        {
+            "name": "localhost:8000/tag/{id}",
+            "request": {
+                "method": "PUT",
+                "url": {
+                    "raw": "http://localhost:8000/tag/1",
+                    "path": [
+                        "tag",
+                        "1"
+                    ],
+                    "protocol": "http",
+                    "host": [
+                        "localhost"
+                    ],
+                    "port": "8000"
+                },
+                "body": {
+                    "mode": "raw",
+                    "options": {
+                        "raw": {
+                            "language": "json"
+                        }
+                    },
+                    "raw": "{\n  \"name\": \"家のおつかい\"\n}"
+                }
+            }
+        },
+        {
+            "name": "localhost:8000/tag/{id)",
+            "request": {
+                "method": "DELETE",
+                "url": {
+                    "raw": "http://localhost:8000/tag/2",
+                    "path": [
+                        "tag",
+                        "2"
                     ],
                     "protocol": "http",
                     "host": [
