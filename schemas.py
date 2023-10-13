@@ -1,3 +1,4 @@
+from typing import Union
 from pydantic import BaseModel, ConfigDict
 
 class TodoSchema(BaseModel):
@@ -9,4 +10,5 @@ class TodoSchema(BaseModel):
 
 class CreateTodoSchema(BaseModel):
     text: str
+    completed: Union[bool, None] = False
     model_config = ConfigDict(from_attributes=True)
