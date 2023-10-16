@@ -9,7 +9,7 @@ from fastapi_route_logger_middleware import RouteLoggerMiddleware
 from sqlalchemy.orm import Session
 
 from database import SessionLocal
-from models import TodoModel, TagModel
+from models import TodoModel, TagModel, todo_and_tag
 from schemas import CreateTagSchema, TagSchema, TodoSchema, CreateTodoSchema, IdSchema
 
 app = FastAPI()
@@ -41,7 +41,12 @@ def create_todo(todo: CreateTodoSchema, db: Session = Depends(get_db)) -> Any:
 
 @app.get("/todo", response_model=List[TodoSchema])
 def read_todo(skip: int = 0, limit: int = 100, completed: bool = True, db: Session = Depends(get_db)) -> Any:
-    todo_model_list = db.query(TodoModel).filter(TodoModel.completed == completed).offset(skip).limit(limit).all()
+    todo_model_list = db.query(TodoModel) \
+        .outerjoin(todo_and_tag) \
+        .outerjoin(TagModel) \
+        .filter(TodoModel.completed == completed) \
+        .offset(skip).limit(limit).all()
+
     todo_schema_list = [
         TodoSchema.model_validate(todo_model) for todo_model in todo_model_list
     ]
@@ -50,7 +55,10 @@ def read_todo(skip: int = 0, limit: int = 100, completed: bool = True, db: Sessi
 
 @app.get("/todo/{todo_id}", response_model=TodoSchema)
 def read_todo_by_id(todo_id: int, db: Session = Depends(get_db)) -> Any:
-    todo_model = db.query(TodoModel).filter(TodoModel.id == todo_id).first()
+    todo_model = db.query(TodoModel) \
+        .outerjoin(todo_and_tag) \
+        .outerjoin(TagModel) \
+        .filter(TodoModel.id == todo_id).first()
     if todo_model is None:
         raise HTTPException(status_code=404, detail="Todo is not found")
     return TodoSchema.model_validate(todo_model)
