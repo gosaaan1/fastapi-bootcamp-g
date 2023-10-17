@@ -23,7 +23,7 @@ class TodoModel(Base):
     created_at = Column(DateTime, default=datetime.now(), nullable=False)
     completed = Column(Boolean, default=False, nullable=False)
 
-    tags: Mapped[List['TagModel']] = relationship(secondary=todo_and_tag, back_populates="todos")
+    tags: Mapped[list['TagModel']] = relationship(secondary=todo_and_tag, back_populates="todos")
 
 
 class TagModel(Base):
@@ -33,4 +33,4 @@ class TagModel(Base):
     name = Column(String, nullable=False)
     created_at = Column(DateTime, default=datetime.now(), nullable=False)
 
-    todos: Mapped[List['TodoModel']] = relationship(secondary=todo_and_tag, back_populates="tags")
+    todos: Mapped[list[TodoModel]] = relationship(secondary=todo_and_tag, back_populates="tags")

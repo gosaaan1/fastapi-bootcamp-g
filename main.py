@@ -6,11 +6,13 @@ from typing import Any, Generator, List
 from fastapi import Depends, FastAPI, HTTPException, Response, status
 from fastapi.encoders import jsonable_encoder
 from fastapi_route_logger_middleware import RouteLoggerMiddleware
-from sqlalchemy.orm import Session
+from sqlalchemy.orm import Session, joinedload
 
 from database import SessionLocal
 from models import TodoModel, TagModel, todo_and_tag
-from schemas import CreateTagSchema, TagSchema, TodoSchema, CreateTodoSchema, IdSchema
+from schemas import IdSchema
+from schemas import CreateTagSchema, TagSchema, TagWithTodoSchema
+from schemas import CreateTodoSchema, TodoSchema, TodoWithTagSchema
 
 app = FastAPI()
 
@@ -42,8 +44,6 @@ def create_todo(todo: CreateTodoSchema, db: Session = Depends(get_db)) -> Any:
 @app.get("/todo", response_model=List[TodoSchema])
 def read_todo(skip: int = 0, limit: int = 100, completed: bool = True, db: Session = Depends(get_db)) -> Any:
     todo_model_list = db.query(TodoModel) \
-        .outerjoin(todo_and_tag) \
-        .outerjoin(TagModel) \
         .filter(TodoModel.completed == completed) \
         .offset(skip).limit(limit).all()
 
@@ -53,15 +53,16 @@ def read_todo(skip: int = 0, limit: int = 100, completed: bool = True, db: Sessi
     return todo_schema_list
 
 
-@app.get("/todo/{todo_id}", response_model=TodoSchema)
+@app.get("/todo/{todo_id}", response_model=TodoWithTagSchema)
 def read_todo_by_id(todo_id: int, db: Session = Depends(get_db)) -> Any:
     todo_model = db.query(TodoModel) \
         .outerjoin(todo_and_tag) \
         .outerjoin(TagModel) \
+        .options(joinedload(TodoModel.tags)) \
         .filter(TodoModel.id == todo_id).first()
     if todo_model is None:
         raise HTTPException(status_code=404, detail="Todo is not found")
-    return TodoSchema.model_validate(todo_model)
+    return TodoWithTagSchema.model_validate(todo_model)
 
 
 @app.put("/todo/{todo_id}")
@@ -117,13 +118,16 @@ def read_tag(skip: int = 0, limit: int = 100, db: Session = Depends(get_db)) -> 
     ]
     return tag_schema_list
 
-@app.get("/tag/{tag_id}", response_model=TagSchema)
+@app.get("/tag/{tag_id}", response_model=TagWithTodoSchema)
 def read_tag_by_id(tag_id: int, db: Session = Depends(get_db)) -> Any:
-    tag_model = db.query(TagModel).filter(TagModel.id == tag_id).first()
+    tag_model = db.query(TagModel).filter(TagModel.id == tag_id) \
+        .outerjoin(todo_and_tag) \
+        .outerjoin(TodoModel) \
+        .options(joinedload(TagModel.todos)).first()
     if not tag_model:
         raise HTTPException(status_code=404, detail="Tag not found")
 
-    return TagSchema.model_validate(tag_model)
+    return TagWithTodoSchema.model_validate(tag_model)
 
 
 @app.put("/tag/{tag_id}")
